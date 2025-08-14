@@ -1,12 +1,28 @@
-<h1>Movie Lists</h1>
-<%= simple_form_for @list do |f| %>
-  <%= f.input :name, label: "Type a name" %>
-  <%= f.button :submit, "Save List" %>
-<% end %>
-<ul>
-  <% @lists.each do |list| %>
-    <%= link_to list_path(list) do %>
-      <li><%= list.name %></li>
+<div class="container col-12 col-lg-10">
+  <section class="banner" aria-label="Cinema banner">
+    <div class="banner__content text-center">
+      <h1>Save any kinds of movies!</h1>
+      <p>Classic</p>
+    </div>
+  </section>
+</div>
+
+<div class="container p-4">
+  <h2>My Lists</h2>
+  <div class="cards">
+    <% @lists.each do |list| %>
+      <%= link_to list_path(list), class: "card-category",
+        style: "background-image: linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)), url(#{asset_path('List.jpg')})" do %>
+        <span><%= list.name %></span>
+      <% end %>
     <% end %>
+  </div>
+</div>
+
+<div class="container add-list-section">
+  <h3>Add a new list</h3>
+  <%= simple_form_for @list do |f| %>
+    <%= f.input :name, label: "Type a name" %>
+    <%= f.button :submit, "Save List", class: "btn" %>
   <% end %>
-</ul>
+</div>

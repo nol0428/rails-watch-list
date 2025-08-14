@@ -1,0 +1,36 @@
+<% movie = bookmark.movie %>
+
+<div class="movie-card card shadow-sm border-0 h-100">
+  <div class="row g-0">
+    <div class="col-12 col-md-5">
+      <%= image_tag movie.poster_url,
+          class: "img-fluid rounded-start movie-poster",
+          alt: movie.title %>
+    </div>
+
+    <div class="col-12 col-md-7">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <h5 class="card-title mb-1"><%= movie.title %></h5>
+          <span class="badge bg-warning text-dark align-self-start">
+            <i class="fa-solid fa-star me-1"></i><%= movie.rating %>
+          </span>
+        </div>
+
+        <p class="card-text text-muted small mb-2">
+          <%= truncate(movie.overview, length: 220) %>
+        </p>
+
+        <p class="card-text mb-3">
+          <i class="fa-solid fa-quote-left text-secondary me-2"></i>
+          <%= bookmark.comment %>
+        </p>
+
+        <%= link_to "delete",
+            bookmark_path(bookmark),
+            data: { turbo_method: :delete, turbo_confirm: "Remove this movie from the list?" },
+            class: "btn btn-outline-danger btn-sm" %>
+      </div>
+    </div>
+  </div>
+</div>

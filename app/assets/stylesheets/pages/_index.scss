@@ -1,2 +1,155 @@
 // Import page-specific CSS files here.
 @import "home";
+
+.banner {
+  position: relative;
+  min-height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  overflow: hidden;
+
+  background-image: image-url('Cinema.jpg');
+  background-size: cover;
+  background-position: center;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      rgba(0,0,0,0.4),
+      rgba(0,0,0,0.4)
+    );
+  }
+}
+
+.banner__content {
+  position: relative;
+  z-index: 1;
+  padding: 24px;
+}
+
+.banner__content h1 {
+  margin: 0 0 8px;
+  color: #fff;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.25);
+  font-weight: 700;
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.banner__content p {
+  margin: 0;
+  color: #fff;
+  opacity: .8;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.25);
+  font-size: clamp(16px, 2vw, 20px);
+}
+
+$bps: (
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+);
+
+.cards {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+
+  @media (min-width: map-get($bps, md)) { grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: map-get($bps, lg)) { grid-template-columns: repeat(3, 1fr); }
+}
+
+.card-category {
+  display: block;
+  position: relative;
+  overflow: hidden;
+
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  background-size: cover;
+  background-position: center;
+  text-decoration: none;
+  color: #fff;
+
+  padding-top: 66%;
+
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,.12);
+    filter: brightness(1.03);
+  }
+
+  span {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 14px;
+    font-weight: 700;
+    font-size: clamp(1rem, 2.3vw, 1.25rem);
+    line-height: 1.2;
+    text-shadow: 0 2px 8px rgba(0,0,0,.35);
+    z-index: 1;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 60%);
+    pointer-events: none;
+  }
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 1100px;
+}
+
+.add-list-section {
+  margin-top: 40px;
+  padding: 24px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+  h3 {
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .form-control {
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      font-size: 1rem;
+    }
+
+    .btn {
+      background-color: #007bff;
+      color: white;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+}
