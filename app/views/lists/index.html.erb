@@ -1,0 +1,12 @@
+<h1>Movie Lists</h1>
+<%= simple_form_for @list do |f| %>
+  <%= f.input :name, label: "Type a name" %>
+  <%= f.button :submit, "Save List" %>
+<% end %>
+<ul>
+  <% @lists.each do |list| %>
+    <%= link_to list_path(list) do %>
+      <li><%= list.name %></li>
+    <% end %>
+  <% end %>
+</ul>
