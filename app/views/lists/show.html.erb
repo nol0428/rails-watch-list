@@ -1,6 +1,6 @@
 <div class="container col-12 col-lg-10">
   <section class="banner" aria-label="Cinema banner"
-    style="background-image: linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.4)), url(<%= asset_path('List.jpg') %>)">
+    style="background-image: linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.4)), url(<%= @list.photo.attached? ? cl_image_path(@list.photo.key) : asset_path('List.jpg') %>)">
     <div class="banner__content text-center">
       <h1><%= @list.name %></h1>
       <p><%= pluralize(@list.bookmarks.count, "movie") %></p>

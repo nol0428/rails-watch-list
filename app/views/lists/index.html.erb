@@ -12,7 +12,7 @@
   <div class="cards">
     <% @lists.each do |list| %>
       <%= link_to list_path(list), class: "card-category",
-        style: "background-image: linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)), url(#{asset_path('List.jpg')})" do %>
+        style: "background-image: linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)), url(#{list.photo.attached? ? cl_image_path(list.photo.key) : asset_path('List.jpg')})" do %>
         <span><%= list.name %></span>
       <% end %>
     <% end %>
@@ -23,6 +23,7 @@
   <h3>Add a new list</h3>
   <%= simple_form_for @list do |f| %>
     <%= f.input :name, label: "Type a name" %>
+    <%= f.input :photo, as: :file %>
     <%= f.button :submit, "Save List", class: "btn" %>
   <% end %>
 </div>
