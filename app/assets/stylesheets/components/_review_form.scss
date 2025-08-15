@@ -1,0 +1,27 @@
+.section-title {
+  margin: 2rem 0 1rem;
+  font-weight: 700;
+  letter-spacing: .2px;
+  color: #1f2937;
+}
+
+.review-item {
+  .review-stars {
+    i { color: #f5c518; font-size: 1.1rem; }
+  }
+}
+
+.card .form-label { font-weight: 600; }
+
+.rating-input {
+  i {
+    font-size: 1.25rem;
+    color: #cbd5e1;
+    cursor: pointer;
+    margin-right: .1rem;
+    transition: color .12s ease;
+  }
+  i.active,
+  i:hover,
+  i:hover ~ i { color: #f5c518; }
+}

@@ -11,9 +11,49 @@
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="h4 mb-0">Movies</h2>
+    <button type="button" class="btn btn-primary btn-lg d-flex align-items-center gap-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#addBookmark">
+  <i class="fa-solid fa-circle-plus fa-lg"></i>
+  <span>Add Bookmark</span>
+</button>
   </div>
 
-  <div class="row g-4">
+<div class="modal fade" id="addBookmark" tabindex="-1" aria-labelledby="exampleModalLabel" data-bs-keyboard="false" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Add a new Bookmark</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <%= simple_form_for [@list, @bookmark], html: { class: "bookmark-form" } do |f| %>
+          <div class="mb-3">
+            <%= f.association :movie,
+                  collection: Movie.order(:title),
+                  label: "Select Movie",
+                  label_method: :title,
+                  value_method: :id,
+                  prompt: "🎬 Choose a movie...",
+                  input_html: { class: "form-select form-select-lg shadow-sm" } %>
+          </div>
+
+          <div class="mb-4">
+            <%= f.input :comment,
+                  label: "Your Comment",
+                  as: :text,
+                  input_html: { rows: 3, class: "form-control shadow-sm", placeholder: "💬 Share your thoughts..." } %>
+          </div>
+
+          <div class="text-end">
+            <%= f.button :submit, "💾 Save Bookmark",
+                  class: "btn btn-primary btn-lg px-4 shadow-sm" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="row g-4 mb-5">
     <% @list.bookmarks.each do |bookmark| %>
       <div class="col-12 col-lg-6">
         <%= render "lists/movie_card", bookmark: bookmark %>
@@ -21,33 +61,94 @@
     <% end %>
   </div>
 
-  <h3 class="section-title">Add a new bookmark</h3>
+<div class="row g-4 align-items-start mt-5">
+  <div class="col-12 col-lg-7">
+    <h3 class="section-title mb-3">Reviews</h3>
 
-<%= simple_form_for [@list, @bookmark], html: { class: "bookmark-form" } do |f| %>
-  <div class="row g-3">
-    <div class="col-12 col-md-8">
-      <%= f.association :movie,
-            collection: Movie.order(:title),
-            label_method: :title,
-            value_method: :id,
-            prompt: "Choose a movie",
-            input_html: { class: "form-select" } %>
-    </div>
-
-    <div class="col-12">
-      <%= f.input :comment,
-            label: "Type a comment",
-            as: :text,
-            input_html: { rows: 3, class: "form-control" } %>
-    </div>
-
-    <div class="col-12 text-end">
-      <%= f.button :submit, "Save Bookmark", class: "btn btn-primary px-4" %>
-    </div>
+    <% if @list.reviews.any? %>
+      <% @list.reviews.order(created_at: :desc).each do |review| %>
+        <div class="review-item border-bottom pb-3 mb-3">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="review-stars">
+              <%= stars_for(review.rating) %>
+            </span>
+            <small class="text-muted">
+              <%= time_ago_in_words(review.created_at) %> ago
+            </small>
+          </div>
+          <p class="mb-0"><%= review.comment %></p>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="text-muted">No reviews yet. Be the first to add one!</p>
+    <% end %>
   </div>
-<% end %>
 
-  <div class="mt-4">
-    <%= link_to "Back to lists", lists_path, class: "btn btn-outline-secondary" %>
+  <div class="col-12 col-lg-5">
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-4">
+        <h4 class="h5 mb-3">Add your review</h4>
+
+        <%= simple_form_for [@list, @review] do |f| %>
+          <%= f.input :comment,
+                      label: "Comment",
+                      as: :text,
+                      input_html: { rows: 3, placeholder: "Add your review here..." } %>
+
+          <div class="mb-3">
+            <label class="form-label">Rating</label>
+            <div class="rating-input" data-field-id="review_rating">
+              <%# five clickable stars (1..5) %>
+              <% (1..5).each do |n| %>
+                <i class="fa-star fa-regular" data-value="<%= n %>"></i>
+              <% end %>
+            </div>
+            <%= f.input :rating, as: :hidden %>
+          </div>
+
+          <%= f.button :submit, "Create Review", class: "btn btn-success px-4" %>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>
+
+  <div class="mt-4">
+    <%= link_to "Back to Lists", lists_path, class: "btn btn-outline-secondary" %>
+  </div>
+</div>
+
+<% if @show_new_list_modal %>
+  <script>
+    var modal = new bootstrap.Modal(document.getElementById('addBookmark'));
+    modal.show();
+  </script>
+<% end %>
+
+<script>
+document.addEventListener("turbo:load", setupStars);
+document.addEventListener("DOMContentLoaded", setupStars);
+
+function setupStars() {
+  document.querySelectorAll(".rating-input").forEach((wrap) => {
+    const hiddenId = wrap.dataset.fieldId;
+    const input    = document.getElementById(hiddenId);
+    const stars    = Array.from(wrap.querySelectorAll("i[data-value]"));
+
+    if (!input || stars.length === 0) return;
+
+    const apply = (val) => {
+      stars.forEach(s => s.classList.toggle("active", Number(s.dataset.value) <= val));
+    };
+    apply(Number(input.value || 0));
+
+    stars.forEach((star) => {
+      star.addEventListener("click", () => {
+        const val = Number(star.dataset.value);
+        input.value = val;
+        apply(val);
+      });
+    });
+  });
+}
+</script>

@@ -1,29 +1,63 @@
 <div class="container col-12 col-lg-10">
-  <section class="banner" aria-label="Cinema banner">
-    <div class="banner__content text-center">
-      <h1>Lights. Camera. Add to List!</h1>
-      <p>Because good movies deserve a good home</p>
+  <section class="banner py-5 text-white text-center" aria-label="Cinema banner"
+    style="background: linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.5)), url(<%= asset_path('List.jpg') %>) center/cover no-repeat;">
+    <div class="banner__content">
+      <h1 class="fw-bold display-5">🎬 Lights. Camera. Add to List!</h1>
+      <p class="lead">Because good movies deserve a good home</p>
     </div>
   </section>
 </div>
 
 <div class="container p-4">
-  <h2>My Lists</h2>
-  <div class="cards">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">My Lists</h2>
+    <button type="button" class="btn btn-primary btn-lg shadow-sm" data-bs-toggle="modal" data-bs-target="#addList">
+      <i class="fa-solid fa-circle-plus me-2"></i> New List
+    </button>
+  </div>
+
+  <div class="cards d-grid gap-4">
     <% @lists.each do |list| %>
-      <%= link_to list_path(list), class: "card-category",
-        style: "background-image: linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)), url(#{list.photo.attached? ? cl_image_path(list.photo.key) : asset_path('List.jpg')})" do %>
-        <span><%= list.name %></span>
+      <%= link_to list_path(list), class: "card-category d-flex align-items-end p-3 fw-bold text-white shadow-lg rounded-4",
+        style: "height: 250px; background: linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)), url(#{list.photo.attached? ? cl_image_path(list.photo.key) : asset_path('List.jpg')}) center/cover no-repeat;" do %>
+        <span class="fs-4"><%= list.name %></span>
       <% end %>
     <% end %>
   </div>
 </div>
 
-<div class="container add-list-section">
-  <h3>Add a new list</h3>
-  <%= simple_form_for @list do |f| %>
-    <%= f.input :name, label: "Type a name" %>
-    <%= f.input :photo, as: :file %>
-    <%= f.button :submit, "Save List", class: "btn" %>
-  <% end %>
+<div class="modal fade" id="addList" tabindex="-1"
+     data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-labelledby="addListLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0 rounded-4">
+      <div class="modal-header bg-primary text-white rounded-top-4">
+        <h1 class="modal-title fs-5" id="addListLabel">
+          <i class="fa-solid fa-list me-2"></i> Add a New List
+        </h1>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <%= simple_form_for @list do |f| %>
+          <div class="mb-3">
+            <%= f.input :name, label: "List Name", input_html: { class: "form-control form-control-lg" } %>
+          </div>
+          <div class="mb-4">
+            <%= f.input :photo, as: :file, label: "Upload a Cover Image", input_html: { class: "form-control" } %>
+          </div>
+          <div class="text-end">
+            <%= f.button :submit, "Save List", class: "btn btn-success btn-lg px-4 shadow-sm" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>
+
+<% if @show_new_list_modal %>
+  <script>
+      var modal = new bootstrap.Modal(document.getElementById('addList'));
+      modal.show();
+  </script>
+<% end %>
